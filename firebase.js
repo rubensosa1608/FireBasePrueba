@@ -2,7 +2,7 @@
      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
      // TODO: Add SDKs for Firebase products that you want to use
      // https://firebase.google.com/docs/web/setup#available-libraries
-     import { collection, getFirestore, addDoc, getDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js"
+     import { collection, getFirestore, addDoc, getDoc, getDocs, doc, setDoc , onSnapshot} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js"
 
      // Your web app's Firebase configuration
      const firebaseConfig = {
@@ -19,25 +19,22 @@
 
      const db = getFirestore(app);
 
-
-
      const getLastID = async () => {
       const docRef = doc(db, "configuracion", "ultimoID");
       const docSnap = await getDoc(docRef);
     
       if (docSnap.exists()) {
-        return docSnap.data().valor; // Retorna el valor del último ID
+        return docSnap.data().valor;
       } else {
-        // Si no existe el documento, inicialízalo con 0
+
         await setDoc(docRef, { valor: 0 });
         return 0;
       }
     };
     
-    // Función para actualizar el último ID
     const updateLastID = async (nuevoID) => {
       const docRef = doc(db, "configuracion", "ultimoID");
-      await setDoc(docRef, { valor: nuevoID }); // Actualiza el valor del último ID
+      await setDoc(docRef, { valor: nuevoID });
     };
 
     export const saveBicicleta = async (nombre, marca, precio, tipo) => {
@@ -51,7 +48,7 @@
         await setDoc(bicicletaRef, {
           nombre,
           marca,
-          precio: parseFloat(precio),
+          precio,
           tipo,
         });
     
@@ -63,6 +60,9 @@
       }
     };
 
+    export const getBicicletas = () => getDocs(collection(db, 'bicicletas'))
+
+    export const onGetBicis = (callback) => onSnapshot(collection(db, 'bicicletas'), callback)
 
 
     
